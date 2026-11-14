@@ -1,0 +1,17 @@
+{
+  "name": "secure-notes-frontend",
+  "version": "1.0.0",
+  "description": "Functional Frontend Client for Secure Note-Taking Application",
+  "scripts": {
+    "start": "npx serve -l 3000",
+    "dev": "npx serve -l 3000"
+  },
+  "keywords": [
+    "frontend",
+    "notes-app",
+    "rbac",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "ISC"
+}

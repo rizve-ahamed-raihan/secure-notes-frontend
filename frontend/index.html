@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Note-Taking Application</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <h1>Secure Notes App</h1>
+        <span class="badge" id="env-badge">Frontend Client</span>
+      </div>
+      <div class="header-right" id="user-session-bar">
+        <span id="session-status">Not logged in</span>
+        <button id="btn-logout" class="btn btn-secondary btn-sm hidden">Logout</button>
+      </div>
+    </header>
+
+    <!-- API Connection Config Bar -->
+    <div class="api-config-bar">
+      <label for="api-url-input">Backend API Base:</label>
+      <input type="text" id="api-url-input" placeholder="http://localhost:5000" />
+      <button id="btn-save-api-url" class="btn btn-sm btn-secondary">Set URL</button>
+      <button id="btn-check-api" class="btn btn-sm btn-secondary">Ping API</button>
+      <span id="api-status-indicator" class="api-status-badge">Checking...</span>
+    </div>
+
+    <!-- Global Alert / Toast -->
+    <div id="alert-box" class="alert hidden" role="alert"></div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="tab-auth" id="tab-btn-auth">Authentication</button>
+      <button class="tab-btn" data-tab="tab-notes" id="tab-btn-notes">My Notes</button>
+      <button class="tab-btn" data-tab="tab-posts" id="tab-btn-posts">Public Posts</button>
+      <button class="tab-btn" data-tab="tab-aggregations" id="tab-btn-aggregations">Aggregations</button>
+      <button class="tab-btn hidden" data-tab="tab-admin" id="tab-btn-admin">Admin Console</button>
+    </nav>
+
+    <!-- Tab 1: Authentication -->
+    <section id="tab-auth" class="tab-content active">
+      <div class="auth-grid">
+        <!-- Login Card -->
+        <div class="card">
+          <h2>Login</h2>
+          <form id="form-login">
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input type="email" id="login-email" required placeholder="user@example.com" />
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" required placeholder="••••••••" />
+            </div>
+            <button type="submit" class="btn btn-primary">Log In</button>
+          </form>
+        </div>
+
+        <!-- Register Card -->
+        <div class="card">
+          <h2>Register New Account</h2>
+          <form id="form-register">
+            <div class="form-group">
+              <label for="reg-name">Full Name</label>
+              <input type="text" id="reg-name" required placeholder="Jane Doe" />
+            </div>
+            <div class="form-group">
+              <label for="reg-email">Email Address</label>
+              <input type="email" id="reg-email" required placeholder="jane@example.com" />
+            </div>
+            <div class="form-group">
+              <label for="reg-password">Password (min 6 chars)</label>
+              <input type="password" id="reg-password" required minlength="6" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+              <label for="reg-interests">Interests (comma separated)</label>
+              <input type="text" id="reg-interests" placeholder="chess, reading, coding" />
+              <small>Used in Aggregation Scenario 1</small>
+            </div>
+            <button type="submit" class="btn btn-success">Create Account</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card info-box" style="margin-top: 1.5rem;">
+        <h3>Quick Test Accounts</h3>
+        <p>If connecting to the local backend with demo data enabled, you can use:</p>
+        <ul style="margin: 0.5rem 0 0 1.25rem;">
+          <li><strong>User:</strong> <code>user@example.com</code> / <code>password123</code></li>
+          <li><strong>Admin:</strong> <code>admin@example.com</code> / <code>adminpassword123</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Tab 2: Notes Management -->
+    <section id="tab-notes" class="tab-content">
+      <div class="grid-2col">
+        <!-- Create Note -->
+        <div class="card">
+          <h2>Create New Note</h2>
+          <form id="form-create-note">
+            <div class="form-group">
+              <label for="note-title">Title</label>
+              <input type="text" id="note-title" required placeholder="Project Architecture" />
+            </div>
+            <div class="form-group">
+              <label for="note-content">Content</label>
+              <textarea id="note-content" rows="4" required placeholder="Discussing ESR indexing rules..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Note</button>
+          </form>
+        </div>
+
+        <!-- Notes List -->
+        <div class="card">
+          <div class="card-header-flex">
+            <h2>My Notes</h2>
+            <button id="btn-refresh-notes" class="btn btn-sm btn-secondary">Refresh</button>
+          </div>
+          <div id="notes-list-container" class="item-list">
+            <p class="muted">Loading notes...</p>
+          </div>
+          <div class="pagination-bar" id="notes-pagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Public Posts -->
+    <section id="tab-posts" class="tab-content">
+      <div class="grid-2col">
+        <!-- Create Post -->
+        <div class="card">
+          <h2>Publish Community Post</h2>
+          <form id="form-create-post">
+            <div class="form-group">
+              <label for="post-title">Post Title</label>
+              <input type="text" id="post-title" required placeholder="My Thoughts on MongoDB Indexes" />
+            </div>
+            <div class="form-group">
+              <label for="post-content">Post Content</label>
+              <textarea id="post-content" rows="4" required placeholder="Posts are stored in a separate collection..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Publish Post</button>
+          </form>
+        </div>
+
+        <!-- Posts List -->
+        <div class="card">
+          <div class="card-header-flex">
+            <h2>Community Posts (Public)</h2>
+            <button id="btn-refresh-posts" class="btn btn-sm btn-secondary">Refresh</button>
+          </div>
+          <div id="posts-list-container" class="item-list">
+            <p class="muted">Loading posts...</p>
+          </div>
+          <div class="pagination-bar" id="posts-pagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Aggregations -->
+    <section id="tab-aggregations" class="tab-content">
+      <div class="aggregations-container">
+        <!-- Scenario 1 -->
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h2>Scenario 1: Group Users by Interests</h2>
+              <p class="muted">Uses exactly one <code>collection.aggregate()</code> call (<code>$unwind</code> + <code>$group</code>).</p>
+            </div>
+            <button id="btn-run-scenario1" class="btn btn-primary">Run Pipeline</button>
+          </div>
+          <div id="scenario1-output" class="aggregation-output">
+            <p class="muted">Click "Run Pipeline" to execute the interest grouping aggregation.</p>
+          </div>
+        </div>
+
+        <!-- Scenario 2 -->
+        <div class="card" style="margin-top: 1.5rem;">
+          <div>
+            <h2>Scenario 2: User Posts ($lookup)</h2>
+            <p class="muted">Retrieves all posts belonging to a particular user via a single pipeline with a <code>$lookup</code> stage.</p>
+          </div>
+          <div class="lookup-form-bar">
+            <input type="text" id="lookup-user-id" placeholder="Enter User ObjectId (e.g. 64b...)" />
+            <button id="btn-use-my-id" class="btn btn-secondary btn-sm">Use My ID</button>
+            <button id="btn-run-scenario2" class="btn btn-primary">Retrieve Posts</button>
+          </div>
+          <div id="scenario2-output" class="aggregation-output">
+            <p class="muted">Enter a User ID and click "Retrieve Posts".</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 5: Admin Console -->
+    <section id="tab-admin" class="tab-content">
+      <div class="admin-grid">
+        <!-- Admin User Management -->
+        <div class="card">
+          <div class="card-header-flex">
+            <h2>User Management (Admin Only)</h2>
+            <button id="btn-refresh-admin-users" class="btn btn-sm btn-secondary">Refresh</button>
+          </div>
+          <div id="admin-users-list" class="item-list"></div>
+          <div class="pagination-bar" id="admin-users-pagination"></div>
+
+          <!-- Provision New User -->
+          <div class="admin-provision-box">
+            <h3>Provision New User</h3>
+            <form id="form-admin-create-user">
+              <div class="form-row">
+                <input type="text" id="admin-user-name" required placeholder="Name" />
+                <input type="email" id="admin-user-email" required placeholder="Email" />
+              </div>
+              <div class="form-row">
+                <input type="password" id="admin-user-pass" required placeholder="Password" />
+                <select id="admin-user-role">
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <input type="text" id="admin-user-interests" placeholder="Interests (comma-separated)" />
+              <button type="submit" class="btn btn-success btn-sm" style="margin-top: 0.5rem;">Provision User</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Admin View Everyone's Notes -->
+        <div class="card">
+          <div class="card-header-flex">
+            <h2>System Notes (Everyone's Notes)</h2>
+            <button id="btn-refresh-admin-notes" class="btn btn-sm btn-secondary">Refresh</button>
+          </div>
+          <div id="admin-notes-list" class="item-list"></div>
+          <div class="pagination-bar" id="admin-notes-pagination"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
