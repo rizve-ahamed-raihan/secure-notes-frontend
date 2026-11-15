@@ -18,7 +18,7 @@ jobs:
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID || 'team_HHzmmNEL2uwikvSi7jOdgOp7' }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID || 'prj_EMTEluSeIuQOn0AZS9UL5nbwF4iF' }}
           vercel-args: '--prod'
           working-directory: ./frontend
