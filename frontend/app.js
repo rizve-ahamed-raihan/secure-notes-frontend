@@ -1,6 +1,6 @@
 // Configurable Backend API Base URL
 // When deployed on Vercel, set your deployed backend URL here or in the UI "API URL" input field.
-const DEFAULT_PRODUCTION_BACKEND_URL = '';
+const DEFAULT_PRODUCTION_BACKEND_URL = 'https://backend-test-livid.vercel.app';
 
 let API_BASE_URL = localStorage.getItem('API_BASE_URL') || (
   window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
